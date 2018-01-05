@@ -11,7 +11,7 @@ export default function Product(props) {
         <div className="Product">
             <Panel className="Product__inner" header={props.product.name}>
                 <div className="Product__button text-right">
-                    <Button bsStyle="danger">Remove</Button>
+                    <Button onClick={() => props.deleteProduct(props.product._id)} bsStyle="danger">Remove</Button>
                 </div>
                 {colors}
             </Panel>

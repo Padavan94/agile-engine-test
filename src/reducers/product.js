@@ -1,6 +1,7 @@
 import {
     GET_PRODUCTS, GET_PRODUCTS_ERROR, GET_PRODUCTS_SUCCESS, ADD_PRODUCT,
-    ADD_PRODUCT_SUCCESS, ADD_PRODUCT_ERROR
+    ADD_PRODUCT_SUCCESS, ADD_PRODUCT_ERROR, DELETE_PRODUCT, DELETE_PRODUCT_ERROR,
+    DELETE_PRODUCT_SUCCESS
 } from "../actions/actions";
 
 let initialState = {
@@ -21,9 +22,16 @@ export default function product(state = initialState, action) {
     case ADD_PRODUCT:
           return {...state, fetching: true}
     case ADD_PRODUCT_SUCCESS:
-            return {...state, items: action.payload, fetching: false}
+            return {...state, message: action.payload, fetching: false}
     case ADD_PRODUCT_ERROR:
       return {...state, message: action.payload, fetching: false}
+
+    case DELETE_PRODUCT:
+            return {...state, fetching: true}
+    case DELETE_PRODUCT_SUCCESS:
+          return {...state, message: action.payload, fetching: false}
+    case DELETE_PRODUCT_ERROR:
+    return {...state, message: action.payload, fetching: false}
     default:
         return state
   }

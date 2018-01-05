@@ -16,17 +16,38 @@ export const DELETE_PRODUCT_SUCCESS = 'DELETE_PRODUCT_SUCCESS'
 export const DELETE_PRODUCT_ERROR = 'DELETE_PRODUCT_ERROR'
 
 //form action constants
-export const GET_FORM_VALIDATE = 'ADD_PRODUCT'
+export const GET_FORM_VALIDATE = 'GET_FORM_VALIDATE'
+export const GRAB_FORM_COLORS = 'GRAB_FORM_COLORS'
 
 //form actions
-export function getFormValidate(event) {
+export function getFormValidate(e) {
+    let target = e.target.value
+    let reg = /^[0-9a-zA-Z]+$/;
+    let isFormValid = target.length > 3 && target.length < 9 && reg.test(target)
+
+    let formData = {
+        name: e.target.value,
+        isFormValid,
+        validationState: isFormValid? 'success' : 'error'
+    }
 
     return {
-        type: GET_PRODUCTS_SUCCESS
+        type: GET_FORM_VALIDATE,
+        payload: formData
     }
 }
 
-//product actions
+export function grabFormColors(colors) {
+    console.log('colorsArray', colors)
+
+    return {
+        type: GRAB_FORM_COLORS,
+        payload: colors
+    }
+}
+
+
+//PRODUCT ACTIONS
 export function getProductsSuccess(products) {
   return {
     type: GET_PRODUCTS_SUCCESS,
@@ -54,10 +75,12 @@ export function getProducts() {
     }
 }
 
-export function addProductSuccess(product) {
+//add product
+
+export function addProductSuccess(message) {
   return {
     type: ADD_PRODUCT_SUCCESS,
-    payload: product.data
+    payload: message
   }
 }
 
@@ -73,7 +96,7 @@ export function addProduct(product) {
   return (dispatch) => {
       axios.post('http://localhost:9000/api/save', product)
       .then(function (response) {
-          dispatch(addProductSuccess(response))
+          dispatch(addProductSuccess(response.status))
           dispatch(getProducts())
       })
       .catch(function (error) {
@@ -82,5 +105,33 @@ export function addProduct(product) {
     }
 }
 
+//delete product
 
-//form actions
+export function deleteProductSuccess(message) {
+  return {
+    type: DELETE_PRODUCT_SUCCESS,
+    payload: message
+  }
+}
+
+export function deleteProductError(message) {
+  return {
+    type: DELETE_PRODUCT_ERROR,
+    payload: message
+  }
+}
+
+export function deleteProduct(id) {
+
+  return (dispatch) => {
+      axios.post('http://localhost:9000/api/delete', {id})
+      .then(function (response) {
+          dispatch(deleteProductSuccess(response.status))
+          dispatch(getProducts())
+      })
+      .catch(function (error) {
+          dispatch(deleteProductError(error.message))
+      });
+    }
+}
+

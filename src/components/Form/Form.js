@@ -1,67 +1,71 @@
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, FormControl, HelpBlock, Button, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
-import {connect} from "react-redux";
-import {addProduct, getProducts} from "../../actions/actions";
+import { FormGroup, ControlLabel, FormControl, HelpBlock, Button} from 'react-bootstrap';
 
 class Form extends Component {
+    constructor(props) {
+        super(props)
 
+        this.state = {
+            colors: []
+        }
+    }
 
+    handleSubmit = (e) => {
+        e.preventDefault()
+        this.props.submit({
+            name: this.props.formData.name,
+            colors: this.props.formData.colors
+        })
+    }
 
-  getValidationState() {
-    const length = this.state.value.length;
-    if (length > 10) return 'success';
-    else if (length > 5) return 'warning';
-    else if (length > 0) return 'error';
-    return null;
-  }
+    handleChange = (e) => {
+        var colors = this.state.colors.slice()
+        if(e.target.checked) {
+            colors.push(e.target.value)
+        } else {
+            colors.splice(colors.indexOf(e.target.value), 1)
+        }
+        this.setState({
+            colors
+        })
+        this.props.grabColors(colors)
+    }
 
-  handleChange(e) {
-    this.setState({ value: e.target.value });
-  }
+    render() {
+        let ColorToggleButtons = this.props.formData.defaultColors.map((color, key) => (
+            <div key={key}><label><input onChange={(e) => this.handleChange(e)} type="checkbox" value={color} />{color}</label></div>
+        ))
 
-  render() {
-    return (
-        <form className="Form" onSubmit={this.props.addProduct}>
-          <FormGroup
-            controlId="formBasicText"
-          >
-            <ControlLabel>Add new product</ControlLabel>
-            <FormControl
-              type="text"
-              value={this.props.form.name}
-              placeholder="Enter text"
-              onChange={this.handleChange}
-            />
-            <FormControl.Feedback />
-            <HelpBlock>4-8 characters, only numbers and letters allowed</HelpBlock>
-          </FormGroup>
-          <FormGroup>
-            <ToggleButtonGroup type="checkbox" defaultValue={[1]}>
-              <ToggleButton value={1}>Red</ToggleButton>
-              <ToggleButton value={2}>Green</ToggleButton>
-              <ToggleButton value={3}>Blue</ToggleButton>
-            </ToggleButtonGroup>
-          </FormGroup>
-          <FormGroup>
-            <Button type="submit" disabled="this.props.form.isFormValid" bsStyle="success">
-              Submit
-            </Button>
-          </FormGroup>
-        </form>
-    );
-  }
+        return (
+            <form className="Form" onSubmit={this.handleSubmit}>
+              <FormGroup
+                controlId="formBasicText"
+                validationState={this.props.formData.validationState}
+              >
+                <ControlLabel>Add new product</ControlLabel>
+                <FormControl
+                  type="text"
+                  value={this.props.formData.name}
+                  placeholder="Enter text"
+                  onChange={this.props.validate}
+                />
+                <FormControl.Feedback />
+                <HelpBlock>4-8 characters, only numbers and <strong>English</strong> letters allowed</HelpBlock>
+              </FormGroup>
+              <FormGroup>
+                  <FormGroup>
+                      {ColorToggleButtons}
+                  </FormGroup>
+              </FormGroup>
+              <FormGroup>
+                <Button type="submit" disabled={!this.props.formData.isFormValid}    bsStyle="success">
+                  Submit
+                </Button>
+              </FormGroup>
+            </form>
+        );
+    }
 }
 
-function mapStateToProps (state) {
-  return {
-    form: state.form
-  }
-}
 
-function mapDispatchToProps(dispatch) {
-    return({
-        addProduct: (product) => {dispatch(addProduct(product))}
-    })
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Form);
+export default Form;

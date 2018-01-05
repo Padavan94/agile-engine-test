@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Form from '../components/Form/Form';
-import ProductList from '../components/Product/ProductList';
+import FormContainer from '../containers/FormContainer';
+import ProductContainer from '../containers/ProductContainer';
 import { Grid, Panel } from 'react-bootstrap';
 import './App.scss';
 
@@ -9,8 +9,8 @@ class App extends Component {
     return (
         <Panel header="Agile Engine test task">
             <Grid>
-              <Form />
-              <ProductList />
+              <FormContainer />
+              <ProductContainer />
             </Grid>
         </Panel>
     );
